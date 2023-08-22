@@ -215,7 +215,7 @@ func OpsgenieProviderVersionsTest(t *testing.T, srcDir string, variables map[str
 	}
 }
 
-func GcpgenieProviderVersionsTest(t *testing.T, srcDir string, variables map[string]interface{}, environment_variables map[string]string) {
+func GcpProviderVersionsTest(t *testing.T, srcDir string, variables map[string]interface{}, environment_variables map[string]string) {
 	constraint := GetProviderConstraint(t, "..", "google")
 	available := GetAvailableVersions(t, "terraform-provider-google")
 	testVers := GetMatchingVersions(t, constraint, available)
