@@ -214,3 +214,30 @@ func OpsgenieProviderVersionsTest(t *testing.T, srcDir string, variables map[str
 		})
 	}
 }
+
+func GcpgenieProviderVersionsTest(t *testing.T, srcDir string, variables map[string]interface{}, environment_variables map[string]string) {
+	constraint := GetProviderConstraint(t, "..", "google")
+	available := GetAvailableVersions(t, "terraform-provider-google")
+	testVers := GetMatchingVersions(t, constraint, available)
+
+	for _, version := range testVers {
+		var tfOptions = &terraform.Options{}
+
+		if len(variables) > 0 {
+			tfOptions.Vars = variables
+		}
+		if len(environment_variables) > 0 {
+			tfOptions.EnvVars = environment_variables
+		}
+		version := version
+		t.Run(version, func(t *testing.T) {
+			t.Parallel()
+
+			dst := teststructure.CopyTerraformFolderToTemp(t, srcDir, ".")
+			UpdateModuleSourcesToLocalPaths(t, dst)
+			UpdateProviderVersion(t, dst, "google", version, "hashicorp/google")
+			tfOptions.TerraformDir = dst
+			terraform.InitAndPlan(t, tfOptions)
+		})
+	}
+}
