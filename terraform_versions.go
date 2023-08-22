@@ -161,3 +161,56 @@ func CloudflareProviderVersionsTest(t *testing.T, srcDir string, variables map[s
 		})
 	}
 }
+
+func DatadogProviderVersionsTest(t *testing.T, srcDir string, variables map[string]interface{}, environment_variables map[string]string) {
+	constraint := GetProviderConstraint(t, "..", "datadog")
+	available := GetAvailableVersions(t, "terraform-provider-datadog")
+	testVers := GetMatchingVersions(t, constraint, available)
+
+	for _, version := range testVers {
+		var tfOptions = &terraform.Options{}
+
+		if len(variables) > 0 {
+			tfOptions.Vars = variables
+		}
+		if len(environment_variables) > 0 {
+			tfOptions.EnvVars = environment_variables
+		}
+		version := version
+		t.Run(version, func(t *testing.T) {
+			t.Parallel()
+
+			dst := teststructure.CopyTerraformFolderToTemp(t, srcDir, ".")
+			UpdateModuleSourcesToLocalPaths(t, dst)
+			UpdateProviderVersion(t, dst, "datadog", version, "datadog/datadog")
+			tfOptions.TerraformDir = dst
+			terraform.InitAndPlan(t, tfOptions)
+		})
+	}
+}
+
+func OpsgenieProviderVersionsTest(t *testing.T, srcDir string, variables map[string]interface{}, environment_variables map[string]string) {
+	// Raised issue with OpsGenie https://github.com/opsgenie/terraform-provider-opsgenie/issues/367
+	testVers := []string{"0.6.10", "0.6.11", "0.6.14", "0.6.15", "0.6.16", "0.6.17", "0.6.18", "0.6.19", "0.6.20"} // testing for specific versions as https://api.releases.hashicorp.com/v1/releases/terraform-provider-opsgenie is not showing anything newer than 0.6.11 currently
+
+	for _, version := range testVers {
+		var tfOptions = &terraform.Options{}
+
+		if len(variables) > 0 {
+			tfOptions.Vars = variables
+		}
+		if len(environment_variables) > 0 {
+			tfOptions.EnvVars = environment_variables
+		}
+		version := version
+		t.Run(version, func(t *testing.T) {
+			t.Parallel()
+
+			dst := teststructure.CopyTerraformFolderToTemp(t, srcDir, ".")
+			UpdateModuleSourcesToLocalPaths(t, dst)
+			UpdateProviderVersion(t, dst, "opsgenie", version, "opsgenie/opsgenie")
+			tfOptions.TerraformDir = dst
+			terraform.InitAndPlan(t, tfOptions)
+		})
+	}
+}
