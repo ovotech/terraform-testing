@@ -3,7 +3,6 @@ package testhelpers
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"regexp"
 	"strings"
@@ -35,7 +34,7 @@ func GetTerraformVersionConstraintE(srcDir string) (string, error) {
 		}
 
 		filename := fmt.Sprintf("%s/%s", srcDir, file.Name())
-		content, err := ioutil.ReadFile(filename)
+		content, err := os.ReadFile(filename)
 		if err != nil {
 			return "", err
 		}
