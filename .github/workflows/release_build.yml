@@ -1,4 +1,4 @@
-name: release
+name: Terraform Testing Release 
 
 on:
   workflow_dispatch:
@@ -35,6 +35,5 @@ jobs:
         with:
           tag_name: ${{ inputs.version }}
           release_name: ${{inputs.version}}
-          
           draft: false
           prerelease: false
