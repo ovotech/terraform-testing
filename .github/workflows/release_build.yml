@@ -1,28 +1,40 @@
-name: Terraform Testing Release Build
+name: release
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
+    inputs:
+      version:
+        description: 'Version'
+        required: true
+        type: string
 
 permissions:
   contents: write
 
 jobs:
-  goreleaser:
+  release:
     runs-on: ubuntu-latest
     steps:
+      - name: Validate
+        run: |
+          if ! [[ "${{ inputs.version }}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              exit 1
+          fi
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - uses: actions/setup-go@v4
-        with:
-          go-version: stable
-      - uses: goreleaser/goreleaser-action@v4
-        with:        
-          distribution: goreleaser
-          version: latest
-          args: release --clean
+      - name: Bump Terraform Testing version  
+        run: git tag ${{ inputs.version }}
+      - name: Push
+        run: git push origin --tags
+      - name: Create Go Sync Release
+        id: create_release
+        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ inputs.version }}
+          release_name: ${{inputs.version}}
+          
+          draft: false
+          prerelease: false
