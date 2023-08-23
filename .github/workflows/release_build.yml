@@ -1,6 +1,7 @@
 name: Terraform Testing Release Build
 
 on:
+  workflow_dispatch:
   pull_request:
     branches:
       - main
