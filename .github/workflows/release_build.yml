@@ -3,8 +3,6 @@ name: Terraform Testing Release Build
 on:
   workflow_dispatch:
   push:
-    tags:
-      - '*'
     branches:
       - main
 
