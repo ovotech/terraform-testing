@@ -2,12 +2,9 @@ name: Terraform Testing Release Build
 
 on:
   workflow_dispatch:
-  pull_request:
+  push:
     branches:
       - main
-  push:
-    tags:
-      - '*'
 
 permissions:
   contents: write
@@ -23,7 +20,7 @@ jobs:
         with:
           go-version: stable
       - uses: goreleaser/goreleaser-action@v4
-        with:
+        with:        
           distribution: goreleaser
           version: latest
           args: release --clean
