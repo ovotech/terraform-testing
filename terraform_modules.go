@@ -185,7 +185,7 @@ func cleanName(originalName string) string {
 
 // filters the matches based on a given pattern and returns a new array
 func filterMatches(matches []string, pattern string) []string {
-	newMatches := []string{}
+	newMatches := make([]string, 0, len(matches))
 	for _, m := range matches {
 		if !strings.Contains(m, pattern) {
 			newMatches = append(newMatches, m)
