@@ -106,9 +106,11 @@ func (mmc *ModuleMetadataCatalog) Init() error {
 		return err
 	}
 
+	filteredMatches := filterMatches(matches, ".terraform")
+
 	mmc.Meta = make([]ModuleMetadata, 0)
 
-	for _, path := range matches {
+	for _, path := range filteredMatches {
 		content, err := os.ReadFile(path)
 		if err != nil {
 			return err
@@ -179,4 +181,15 @@ func initModuleMetadataCatalog() *ModuleMetadataCatalog {
 func cleanName(originalName string) string {
 	parts := strings.Split(originalName, "/")
 	return parts[len(parts)-1]
+}
+
+// filters the matches based on a given pattern and returns a new array
+func filterMatches(matches []string, pattern string) []string {
+	newMatches := []string{}
+	for _, m := range matches {
+		if !strings.Contains(m, pattern) {
+			newMatches = append(newMatches, m)
+		}
+	}
+	return newMatches
 }
