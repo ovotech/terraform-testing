@@ -84,9 +84,6 @@ func (mmc *ModuleMetadataCatalog) Resolve(src string) (string, bool) {
 		return "", false
 	}
 
-	mmc.mx.RLock()
-	defer mmc.mx.RUnlock()
-
 	for _, meta := range mmc.Meta {
 		if meta.Organisation == parts[1] && meta.Name == parts[2] && meta.Provider == parts[3] {
 			return meta.LocalPath, true
@@ -97,9 +94,6 @@ func (mmc *ModuleMetadataCatalog) Resolve(src string) (string, bool) {
 }
 
 func (mmc *ModuleMetadataCatalog) Init() error {
-	mmc.mx.Lock()
-	defer mmc.mx.Unlock()
-
 	pattern := fmt.Sprintf("%s/**/metadata.json", mmc.root)
 	matches, err := zglob.Glob(pattern)
 	if err != nil {
