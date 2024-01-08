@@ -23,7 +23,7 @@ func GetSsmParameter(t *testing.T, name string) string {
 	ssmClient := ssm.NewFromConfig(cfg)
 	out, err := ssmClient.GetParameter(ctx, &ssm.GetParameterInput{
 		Name:           aws.String(name),
-		WithDecryption: true,
+		WithDecryption: aws.Bool(true),
 	})
 	if err != nil {
 		t.Fatalf("Error fetching SSM parameter: %s", err)
