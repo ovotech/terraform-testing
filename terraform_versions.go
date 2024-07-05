@@ -84,7 +84,7 @@ func TerraformVersionsTest(t *testing.T, srcDir string, variables map[string]int
 	versions := GetMatchingVersions(t, constraint, available)
 
 	for _, version := range versions {
-		var tfOptions = &terraform.Options{}
+		tfOptions := &terraform.Options{}
 
 		if len(variables) > 0 {
 			tfOptions.Vars = variables
@@ -112,7 +112,7 @@ func AwsProviderVersionsTest(t *testing.T, srcDir string, variables map[string]i
 	versions := GetMatchingVersions(t, constraint, available)
 
 	for _, version := range versions {
-		var tfOptions = &terraform.Options{}
+		tfOptions := &terraform.Options{}
 
 		if len(variables) > 0 {
 			tfOptions.Vars = variables
@@ -140,7 +140,7 @@ func CloudflareProviderVersionsTest(t *testing.T, srcDir string, variables map[s
 	testVers := GetMatchingVersions(t, constraint, available)
 
 	for _, version := range testVers {
-		var tfOptions = &terraform.Options{}
+		tfOptions := &terraform.Options{}
 
 		if len(variables) > 0 {
 			tfOptions.Vars = variables
@@ -167,7 +167,7 @@ func DatadogProviderVersionsTest(t *testing.T, srcDir string, variables map[stri
 	testVers := GetMatchingVersions(t, constraint, available)
 
 	for _, version := range testVers {
-		var tfOptions = &terraform.Options{}
+		tfOptions := &terraform.Options{}
 
 		if len(variables) > 0 {
 			tfOptions.Vars = variables
@@ -193,7 +193,7 @@ func OpsgenieProviderVersionsTest(t *testing.T, srcDir string, variables map[str
 	testVers := []string{"0.6.10", "0.6.11", "0.6.14", "0.6.15", "0.6.16", "0.6.17", "0.6.18", "0.6.19", "0.6.20"} // testing for specific versions as https://api.releases.hashicorp.com/v1/releases/terraform-provider-opsgenie is not showing anything newer than 0.6.11 currently
 
 	for _, version := range testVers {
-		var tfOptions = &terraform.Options{}
+		tfOptions := &terraform.Options{}
 
 		if len(variables) > 0 {
 			tfOptions.Vars = variables
@@ -220,7 +220,7 @@ func GcpProviderVersionsTest(t *testing.T, srcDir string, variables map[string]i
 	testVers := GetMatchingVersions(t, constraint, available)
 
 	for _, version := range testVers {
-		var tfOptions = &terraform.Options{}
+		tfOptions := &terraform.Options{}
 
 		if len(variables) > 0 {
 			tfOptions.Vars = variables

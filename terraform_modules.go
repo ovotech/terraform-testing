@@ -48,14 +48,13 @@ func UpdateModuleSourcesToLocalPaths(t *testing.T, dst string) {
 		}
 
 		if hasChanges {
-			if err := os.WriteFile(filename, f.Bytes(), 0666); err != nil {
+			if err := os.WriteFile(filename, f.Bytes(), 0o666); err != nil {
 				return err
 			}
 		}
 
 		return nil
 	})
-
 	if err != nil {
 		t.Fatalf("An error occurred when attempting to resolve all module sources to local paths: %s", err.Error())
 	}
