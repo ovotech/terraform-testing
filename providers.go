@@ -166,7 +166,7 @@ func DownloadProviderVersionE(version string, sourceAddress string, providerName
 	// Create ~/.terraform.d/plugin-cache directory if it doesn't exist
 	// https://gist.github.com/ivanzoid/5040166bb3f0c82575b52c2ca5f5a60c
 	if _, err := os.Stat(binaryPath); os.IsNotExist(err) {
-		os.MkdirAll(binaryPath, os.ModeDir|0755)
+		os.MkdirAll(binaryPath, os.ModeDir|0o755)
 	}
 	var binaryUrl string
 	binaryUrl, err = GetBinaryUrl(version, providerName)
@@ -212,7 +212,7 @@ func DownloadProviderVersionE(version string, sourceAddress string, providerName
 	}()
 	defer os.Remove(out.Name())
 	zipExtractPath := binaryDownloadDirectory + "/bin_" + version
-	os.MkdirAll(zipExtractPath, 0755)
+	os.MkdirAll(zipExtractPath, 0o755)
 
 	// Cleanup zip files
 	defer os.RemoveAll(zipExtractPath)

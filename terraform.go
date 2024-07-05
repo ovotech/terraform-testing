@@ -151,7 +151,7 @@ func UpdateModuleSourceAndVersionE(srcDir, module, src, ver string) error {
 		}
 
 		if hasChanges {
-			if err := os.WriteFile(filename, f.Bytes(), 0666); err != nil {
+			if err := os.WriteFile(filename, f.Bytes(), 0o666); err != nil {
 				return err
 			}
 		}
@@ -291,7 +291,7 @@ func UpdateProviderVersionE(dir, provider, version string, providerSource string
 		}
 
 		if hasChanges {
-			if err := ioutil.WriteFile(filename, f.Bytes(), 0666); err != nil {
+			if err := ioutil.WriteFile(filename, f.Bytes(), 0o666); err != nil {
 				return err
 			}
 
@@ -323,7 +323,6 @@ func UpdateProviderVersion(t *testing.T, dir, provider, version string, provider
 // Usage:
 // * version is the version of Terraform to download.
 func GetTerraformBinaryUrlE(version string) (string, error) {
-
 	var binaryUrl string
 	operatingSystem := runtime.GOOS
 	architecture := runtime.GOARCH
@@ -362,7 +361,6 @@ func GetTerraformBinaryUrlE(version string) (string, error) {
 	} else {
 		return "", errors.New("Unable to find an appropriate Terraform binary download URL for the underlying OS and architecture")
 	}
-
 }
 
 // Closure to address file descriptors issue with all the deferred .Close() methods
@@ -412,7 +410,6 @@ func extractAndWriteFile(dst string, f *zip.File) error {
 // Usage:
 // * version is the version of Terraform to download.
 func DownloadTerraformVersionE(version string) (binaryPath string, err error) {
-
 	// Initialise all path variables
 	homeDirectory, _ := os.UserHomeDir()
 	binaryDownloadDirectory := filepath.Join(homeDirectory, ".terraform.versions")
@@ -424,7 +421,7 @@ func DownloadTerraformVersionE(version string) (binaryPath string, err error) {
 		// Create ~/.terraform.versions directory if it doesn't exist
 		// https://gist.github.com/ivanzoid/5040166bb3f0c82575b52c2ca5f5a60c
 		if _, err := os.Stat(binaryDownloadDirectory); os.IsNotExist(err) {
-			os.Mkdir(binaryDownloadDirectory, os.ModeDir|0755)
+			os.Mkdir(binaryDownloadDirectory, os.ModeDir|0o755)
 		}
 
 		var binaryUrl string
@@ -473,7 +470,7 @@ func DownloadTerraformVersionE(version string) (binaryPath string, err error) {
 		defer os.Remove(out.Name())
 
 		zipExtractPath := binaryDownloadDirectory + "/bin_" + version
-		os.MkdirAll(zipExtractPath, 0755)
+		os.MkdirAll(zipExtractPath, 0o755)
 
 		// Cleanup zip files
 		defer os.RemoveAll(zipExtractPath)
