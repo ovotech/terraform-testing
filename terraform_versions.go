@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"sort"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -13,7 +15,53 @@ import (
 	teststructure "github.com/gruntwork-io/terratest/modules/test-structure"
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclwrite"
+	"github.com/mpvl/unique"
 )
+
+// Version represents a semantic version
+type Version struct {
+	Major int
+	Minor int
+	Patch int
+}
+
+// ParseVersion converts a semantic version string to a Version struct
+func parseVersion(v string) (Version, error) {
+	parts := strings.Split(strings.TrimPrefix(v, "v"), ".")
+	if len(parts) < 3 {
+		return Version{}, fmt.Errorf("invalid semantic version format: %s", v)
+	}
+	major, err := strconv.Atoi(parts[0])
+	if err != nil {
+		return Version{}, fmt.Errorf("invalid major version: %s", parts[0])
+	}
+	minor, err := strconv.Atoi(parts[1])
+	if err != nil {
+		return Version{}, fmt.Errorf("invalid minor version: %s", parts[1])
+	}
+
+	return Version{
+		Major: major,
+		Minor: minor,
+		Patch: 0,
+	}, nil
+}
+
+// FilterMinorVersions groups versions by their major.minor version
+func FilterMinorVersions(versions []string) ([]string, error) {
+	var minorVersions []string
+	for _, v := range versions {
+		parsed, err := parseVersion(v)
+		if err != nil {
+			return nil, err
+		}
+		minorKey := fmt.Sprintf("%d.%d.%d", parsed.Major, parsed.Minor, parsed.Patch)
+		minorVersions = append(minorVersions, minorKey)
+	}
+	sort.Strings(minorVersions)
+	unique.Strings(&minorVersions)
+	return minorVersions, nil
+}
 
 // GetTerraformVersionConstraintE returns the Terraform version string for the given module
 // or an error if the provider cannot be found
