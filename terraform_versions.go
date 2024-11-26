@@ -47,8 +47,9 @@ func parseVersion(v string) (Version, error) {
 	}, nil
 }
 
-// FilterMinorVersions groups versions by their major.minor version
-func FilterMinorVersions(versions []string) ([]string, error) {
+// FilterMinorVersionsE groups versions by their major.minor version or
+// returns an error if an error occurs during filtering
+func FilterMinorVersionsE(versions []string) ([]string, error) {
 	var minorVersions []string
 	for _, v := range versions {
 		parsed, err := parseVersion(v)
@@ -61,6 +62,16 @@ func FilterMinorVersions(versions []string) ([]string, error) {
 	sort.Strings(minorVersions)
 	unique.Strings(&minorVersions)
 	return minorVersions, nil
+}
+
+// FilterMinorVersions groups versions by their major.minor version or
+// fails the test if an error occurs during filtering
+func FilterMinorVersions(t *testing.T, versions []string) []string {
+	versions, err := FilterMinorVersionsE(versions)
+	if err != nil {
+		t.Fatalf(err.Error())
+	}
+	return versions
 }
 
 // GetTerraformVersionConstraintE returns the Terraform version string for the given module
