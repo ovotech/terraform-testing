@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -17,6 +18,8 @@ import (
 	"github.com/hashicorp/hcl/v2/hclwrite"
 	"github.com/mpvl/unique"
 )
+
+var blockedTerraformVersions = []string{"1.10.0"}
 
 // Version represents a semantic version
 type Version struct {
@@ -155,10 +158,24 @@ func newTerraformOptions(t *testing.T) *terraform.Options {
 	return opts
 }
 
+func filterBlockedTerraformVersion(available []string) []string {
+	slices.Sort(available)
+	var filteredAvailableVersions []string
+
+	for _, blockedVersion := range blockedTerraformVersions {
+		n, found := slices.BinarySearch(available, blockedVersion)
+		if found {
+			filteredAvailableVersions = slices.Delete(available, n, n+1)
+		}
+	}
+	return filteredAvailableVersions
+}
+
 func TerraformVersionsTest(t *testing.T, srcDir string, variables map[string]interface{}, environment_variables map[string]string) {
 	constraint := GetTerraformVersionConstraint(t, srcDir)
 	available := GetAvailableVersions(t, "terraform")
-	versions := GetMatchingVersions(t, constraint, available)
+	filteredAvailable := filterBlockedTerraformVersion(available)
+	versions := GetMatchingVersions(t, constraint, filteredAvailable)
 
 	for _, version := range versions {
 		tfOptions := newTerraformOptions(t)
