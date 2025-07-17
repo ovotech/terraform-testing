@@ -44,6 +44,9 @@ func GetAvailableVersionsE(release string) ([]string, error) {
 		var result []struct {
 			Version   string `json:"version"`
 			CreatedAt string `json:"timestamp_created"`
+			Status    struct {
+				State string `json:"state"`
+			} `json:"status"`
 		}
 
 		if err := json.Unmarshal(body, &result); err != nil {
@@ -55,7 +58,9 @@ func GetAvailableVersionsE(release string) ([]string, error) {
 		}
 
 		for _, res := range result {
-			versions = append(versions, res.Version)
+			if res.Status.State == "supported" {
+				versions = append(versions, res.Version)
+			}
 			req = fmt.Sprintf("https://api.releases.hashicorp.com/v1/releases/%s?limit=20&after=%s", release, res.CreatedAt)
 		}
 	}
